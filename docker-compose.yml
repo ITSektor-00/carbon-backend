@@ -1,0 +1,46 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: carbon-mongodb-backend
+    ports:
+      - "5000:5000"
+    environment:
+      # MongoDB Configuration
+      - MONGO_URL=${MONGO_URL}
+      # Resend Email Configuration
+      - RESEND_API_KEY=${RESEND_API_KEY}
+      - EMAIL_FROM=${EMAIL_FROM:-onboarding@resend.dev}
+      # Carbon Logo URL (opciono)
+      - CARBON_LOGO_URL=${CARBON_LOGO_URL:-}
+    env_file:
+      - .env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:5000/', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - carbon-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: carbon-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./frontend-build:/usr/share/nginx/html:ro
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - carbon-network
+
+networks:
+  carbon-network:
+    driver: bridge
+
