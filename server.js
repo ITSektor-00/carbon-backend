@@ -8,7 +8,27 @@ const { sendEmail, sendGarancijaConfirmation } = require('./services/emailServic
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+
+// CORS konfiguracija
+const corsOptions = {
+  origin: [
+    'https://www.carbon.co.rs',
+    'https://carbon.co.rs',
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:8080'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200 // Legacy browser support
+};
+
+app.use(cors(corsOptions));
+
+// Handle preflight requests
+app.options('*', cors(corsOptions));
 
 // Povezivanje sa MongoDB
 if (!process.env.MONGO_URL) {
