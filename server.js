@@ -27,8 +27,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Handle preflight requests
-app.options('*', cors(corsOptions));
+// CORS middleware već automatski rukuje OPTIONS zahtevima, ne treba eksplicitno app.options()
 
 // Povezivanje sa MongoDB
 if (!process.env.MONGO_URL) {
