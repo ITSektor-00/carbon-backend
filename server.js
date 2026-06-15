@@ -14,6 +14,7 @@ const corsOptions = {
   origin: [
     'https://www.carbon.co.rs',
     'https://carbon.co.rs',
+    'https://carbon-five-mu.vercel.app',
     'http://localhost:3000',
     'http://localhost:5173',
     'http://localhost:5174',
